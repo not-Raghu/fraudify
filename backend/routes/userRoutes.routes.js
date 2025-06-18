@@ -106,7 +106,7 @@ router.post("/signin", async (req, res) => {
   }
 });
 
-const updatingShchema = z.object({
+const updatingSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
   password: z.string().min(6).optional(),
@@ -117,8 +117,8 @@ router.put("/", authMiddlware, async (req, res) => {
 
   const username = res.username;
   try {
-    updatingShchema.parse({ firstName, lastName, password });
-    const updated = await User.findOneAndUpdate({ username: username }, {password:password,firstName:firstName,lastName:lastName},{new:true}).e;
+    updatingSchema.parse({ firstName, lastName, password });
+    const updated = await User.findOneAndUpdate({ username: username }, {password:password,firstName:firstName,lastName:lastName},{new:true});
     if (updated) {
       return res.status(200).json({
         message: "Updated successfully",

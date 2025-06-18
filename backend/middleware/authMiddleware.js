@@ -10,9 +10,12 @@ export async function authMiddlware(req, res, next) {
   }
   try {
     const decoded = jwt.verify(token,process.env.JWT_SECRET);
+    if(!decoded){
+        return res.status(400).json({
+            message: "Invalid token"
+        })
+    }
     // console.log(decoded)
-    // console.log(req)
-    // console.log(res)
     res.username = decoded.username;
   next()
   } catch (error) {
