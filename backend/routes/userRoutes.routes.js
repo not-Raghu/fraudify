@@ -41,7 +41,6 @@ router.post("/signup", async (req, res) => {
     }
 
     const hashedPassword = await argon2.hash(password);
-
     const userCreated = await User.create({
       username: username,
       firstName: firstName,
@@ -52,10 +51,9 @@ router.post("/signup", async (req, res) => {
     //sending
     if (userCreated) {
       const token = jwt.sign({ username: username }, process.env.JWT_SECRET);
-
       return res.status(200).json({
         message: "User created",
-        token: token, //get's set in localstorage later
+        token: token, //get's set in localstorage later (rn its set in auth bearer)
       });
     }
   } catch (error) {
@@ -76,6 +74,7 @@ router.post("/signin", async (req, res) => {
     });
   }
 
+  console.log(userdetails);
   try {
     const isPasswordMatching = await argon2.verify(
       userdetails.password,
@@ -118,11 +117,16 @@ router.put("/", authMiddlware, async (req, res) => {
   const username = res.username;
   try {
     updatingSchema.parse({ firstName, lastName, password });
-    const updated = await User.findOneAndUpdate({ username: username }, {password:password,firstName:firstName,lastName:lastName},{new:true});
+    const hasedPassword = argon2.hash(password);
+    const updated = await User.findOneAndUpdate(
+      { username: username },
+      { password: hasedPassword, firstName: firstName, lastName: lastName },
+      { new: true }
+    );
     if (updated) {
       return res.status(200).json({
         message: "Updated successfully",
-        updated
+        updated,
       });
     }
   } catch (error) {
@@ -130,7 +134,30 @@ router.put("/", authMiddlware, async (req, res) => {
   }
 });
 
-router.get("/bulk", authMiddlware, (req, res) => {
-  
+router.get("/bulk", authMiddlware, async (req, res) => {
+  //somehow extract query params
+  const filter = req.query.filter || "";
+
+  if(filter.trim === ""){
+    return res.json({
+      user: []
+    })
+  }
+  const users = await User.find({
+    $or: [
+      { firstName: { $regex: filter, $options: "i" } },
+      { lastName: { $regex: filter, $options: "i" } },
+    ],
+  }).sort({username: 1});
+
+  const user = users.map(user => ({
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName
+  }));
+
+  return res.json({
+    user: user
+  })
 });
 export default router;
