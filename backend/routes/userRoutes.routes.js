@@ -2,7 +2,7 @@ import express from "express";
 import * as argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
-import { User } from "../db.js";
+import { Account, User } from "../db.js";
 import { authMiddlware } from "../middleware/authMiddleware.js";
 const router = express();
 
@@ -51,6 +51,7 @@ router.post("/signup", async (req, res) => {
     //sending
     if (userCreated) {
       const token = jwt.sign({ username: username }, process.env.JWT_SECRET);
+      Account.find({userId: userCreated._id}, { balance: 500})
       return res.status(200).json({
         message: "User created",
         token: token, //get's set in localstorage later (rn its set in auth bearer)
@@ -74,7 +75,6 @@ router.post("/signin", async (req, res) => {
     });
   }
 
-  console.log(userdetails);
   try {
     const isPasswordMatching = await argon2.verify(
       userdetails.password,
@@ -117,7 +117,7 @@ router.put("/", authMiddlware, async (req, res) => {
   const username = res.username;
   try {
     updatingSchema.parse({ firstName, lastName, password });
-    const hasedPassword = argon2.hash(password);
+    const hasedPassword = await argon2.hash(password);
     const updated = await User.findOneAndUpdate(
       { username: username },
       { password: hasedPassword, firstName: firstName, lastName: lastName },
@@ -143,11 +143,22 @@ router.get("/bulk", authMiddlware, async (req, res) => {
       user: []
     })
   }
+
+  //find the user 
+  const currentUser = await User.findOne({username: res.username})
+  const currentUserId = currentUser._id;
+
+
+  //not retrieve current user shit
   const users = await User.find({
+    //find all the users where {currentUserId} is not this AND {firstName or lastName == filter}
+   // https://stackoverflow.com/questions/52136551/mongoose-find-exclude-one-specific-document
+
     $or: [
       { firstName: { $regex: filter, $options: "i" } },
       { lastName: { $regex: filter, $options: "i" } },
     ],
+    
   }).sort({username: 1});
 
   const user = users.map(user => ({
