@@ -51,7 +51,10 @@ router.post("/signup", async (req, res) => {
     //sending
     if (userCreated) {
       const token = jwt.sign({ username: username }, process.env.JWT_SECRET);
-      Account.find({userId: userCreated._id}, { balance: 500})
+      const createdMock = await Account.create({userId: userCreated._id, balance: 1000});
+
+
+
       return res.status(200).json({
         message: "User created",
         token: token, //get's set in localstorage later (rn its set in auth bearer)
@@ -136,7 +139,7 @@ router.put("/", authMiddlware, async (req, res) => {
 
 router.get("/bulk", authMiddlware, async (req, res) => {
   //somehow extract query params
-  const filter = req.query.filter || "";
+  const filter = req.query.filter.toLowerCase() || "";
 
   if(filter.trim === ""){
     return res.json({
