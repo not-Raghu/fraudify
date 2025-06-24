@@ -41,7 +41,7 @@ router.post("/transfer", authMiddlware, async (req, res) => {
         message: "Invalid account",
       });
     }
-    console.log("sending to", sendingTo);
+
     const currentUserAcconut = await Account.findOne({
       userId: currentUserId._id,
     });
@@ -52,7 +52,6 @@ router.post("/transfer", authMiddlware, async (req, res) => {
       });
     }
 
-    console.log("current user", currentUserAcconut);
 
 
 
