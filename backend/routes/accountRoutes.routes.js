@@ -54,9 +54,7 @@ router.post("/transfer", authMiddlware, async (req, res) => {
 
     console.log("current user", currentUserAcconut);
 
-    // we have sending to account and current user account ----------------------
 
-    //now money transferrrr - start a transactionnn
 
     await Account.findByIdAndUpdate(currentUserAcconut._id, {
         $inc:{balance: -amount} 
