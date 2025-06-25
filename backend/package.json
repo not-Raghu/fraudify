@@ -8,7 +8,7 @@
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Raghu :3",
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.43.0",
