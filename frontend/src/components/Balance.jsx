@@ -12,7 +12,7 @@ const Balance = () => {
 
   return (
     <div>
-      <div className="border border-amber-500 p-5 text-xl mt-2 rounded font-sans">{balance && <p>Your current balance ${balance}</p>}</div>
+      <div className="p-5 text-xl mt-2 rounded font-sans">{balance && <p>Your current balance ${balance}</p>}</div>
     </div>
   );
 };

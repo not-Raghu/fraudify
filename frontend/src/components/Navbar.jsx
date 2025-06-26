@@ -12,10 +12,15 @@ import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 const Navbar = ({ user }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
+
+  const history = useNavigate();
 
   const updateProfile = async () => {
     console.log(firstName, lastName, password);
@@ -45,7 +50,7 @@ const Navbar = ({ user }) => {
 
   return (
     <div>
-      <div className="border border-amber-500 rounded p-11 flex justify-between">
+      <div className="rounded p-11 flex justify-between">
         <div className="font-bold text-5xl font-sans">
           <div>PayTM </div>
           <div className="font-light text-xl font-sans">
@@ -67,11 +72,10 @@ const Navbar = ({ user }) => {
               </SheetTrigger>
               <SheetContent className="bg-black text-white ">
                 <SheetHeader>
-                  <SheetTitle className="text-white">
-                    Update details
-                  </SheetTitle>
+                  <SheetTitle className="text-white">Update details</SheetTitle>
                   <SheetDescription>
-                      Please dont put your first and last name empty , didnt add that validation 😭
+                    Please dont put your first and last name empty , didnt add
+                    that validation 😭
                   </SheetDescription>
                 </SheetHeader>
 
@@ -117,6 +121,17 @@ const Navbar = ({ user }) => {
                 {user.firstName} {user.lastName}
               </p>
             )}
+          </div>
+          <div className="my-1.5 mx-3">
+            <div className="text-white hover:cursor-pointer">
+              <LogOut
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  history("/signin");
+                  toast.success("logged out successfully!")
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>

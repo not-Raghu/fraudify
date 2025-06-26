@@ -7,9 +7,9 @@ import { authMiddlware } from "../middleware/authMiddleware.js";
 const router = express();
 
 const signupSchema = z.object({
-  username: z.string().email(), ///^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+  username: z.string().email().trim(), ///^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm
+  firstName: z.string().trim().optional(),
+  lastName: z.string().trim().optional(),
   password: z.string().min(6),
 });
 
@@ -127,7 +127,9 @@ router.get("/me", authMiddlware, async (req, res) => {
     return res.status(200).json({
       user,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("error getting data, are you logged in?")
+  }
 });
 
 const updatingSchema = z.object({

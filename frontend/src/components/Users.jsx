@@ -9,7 +9,7 @@ const Users = () => {
   const [search, setSearch] = useState("");
   return (
     <div className="py-5 px-3">
-      <div className="font-sans mb-1">Type User you want to send to</div>
+      <div className="font-sans mb-1">Type email you want to send to</div>
       <Input
         className="w-xl mb-5"
         value={search}
@@ -29,10 +29,10 @@ const User = ({ search }) => {
   const history = useNavigate();
 
   useEffect(() => {
-    console.log(users);
+    // console.log(users);
     const token = localStorage.getItem("token"); 
     axios
-      .get("http://localhost:3000/api/v1/user/bulk?filter=" + search, { //add debouncing here 
+      .get("http://localhost:3000/api/v1/user/bulk?filter=" + search, { //add debouncing here ;
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +51,7 @@ const User = ({ search }) => {
         {users.map((u, index) => (
           <li
             key={index}
-            className="p-4 border border-amber-300 mb-2 rounded-2xl"
+            className="p-4 border border-gray-500 mb-2 rounded-2xl"
           >
             <div className="flex items-center justify-between">
               <div>

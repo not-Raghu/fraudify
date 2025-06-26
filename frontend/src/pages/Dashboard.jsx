@@ -4,12 +4,19 @@ import Users from "@/components/Users";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState({});
   const history = useNavigate();
+
+
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if(!token){
+      history("/signin");
+    }
+
     axios
       .get("http://localhost:3000/api/v1/user/me", {
         headers: {
@@ -17,17 +24,14 @@ const Dashboard = () => {
         },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setUserData(res);
-      });
+      }).catch(err => {
+        toast.error(err.response.data.message)
+        history('/signin')
+      })
   }, []);
 
-  useEffect(()=>{
-    const token = localStorage.getItem("token")
-    if(!token){
-      history("/signin")
-    }
-  })
   return (
     <div className="w-screen h-screen text-white">
       <div>

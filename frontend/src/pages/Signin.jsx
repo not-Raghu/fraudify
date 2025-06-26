@@ -40,7 +40,6 @@ export default function Signin() {
       localStorage.setItem("token", signupResponse.data.token);
       history("/dashboard");
     } catch (error) {
-      console.log(error)
       const errorMsg = error?.response?.data?.message;
       toast.error(errorMsg);
     }
