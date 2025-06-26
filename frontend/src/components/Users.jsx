@@ -5,9 +5,7 @@ import { Button } from "./ui/button";
 const Users = () => {
   return (
     <div className="py-5 px-3">
-      <div className="font-sans mb-1">
-        Type User you want to send to
-      </div>
+      <div className="font-sans mb-1">Type User you want to send to</div>
       <Input className="w-xl mb-5" />
 
       {/* input where user types and the filter on filter is applied */}
@@ -43,9 +41,12 @@ const User = () => {
   ];
   return (
     <div>
-      <ul className="">
+      <ul>
         {users.map((u, index) => (
-          <li key={index} className="p-4 border border-amber-300 mb-2 rounded-2xl">
+          <li
+            key={index}
+            className="p-4 border border-amber-300 mb-2 rounded-2xl"
+          >
             <div className="flex items-center justify-between">
               <div className="grid grid-cols-4">
                 <span>
