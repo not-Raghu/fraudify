@@ -9,7 +9,40 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "@radix-ui/react-label";
-const Navbar = () => {
+import axios from "axios";
+import { useState } from "react";
+import { toast } from "react-toastify";
+const Navbar = ({ user }) => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [password, setPassword] = useState("");
+
+  const updateProfile = async () => {
+    console.log(firstName, lastName, password);
+    const token = localStorage.getItem("token"); //send authorization token when a route is protected
+    axios
+      .put(
+        "http://localhost:3000/api/v1/user",
+        {
+          firstName: firstName,
+          lastName: lastName,
+          password: password,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => {
+        toast("udpated successfully , refresh to see the changes");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.message);
+      });
+  };
+
   return (
     <div>
       <div className="border border-amber-500 rounded p-11 flex justify-between">
@@ -29,7 +62,7 @@ const Navbar = () => {
                   className="text-white hover:cursor-pointer text-xl pb-3"
                   asChild
                 >
-                  <span>Change password</span>
+                  <span>Update profile</span>
                 </Button>
               </SheetTrigger>
               <SheetContent className="bg-black text-white ">
@@ -44,17 +77,47 @@ const Navbar = () => {
 
                 <div className="w-78   mx-3 ">
                   <Label>First Name</Label>
-                  <Input placeholder="john" />
+                  <Input
+                    placeholder="john"
+                    value={firstName}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                    }}
+                  />
                   <Label>Last Name</Label>
-                  <Input placeholder="doe" />
+                  <Input
+                    placeholder="doe"
+                    value={lastName}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                    }}
+                  />
                   <Label>Password</Label>
-                  <Input placeholder="password" />
-                </div>  
-                <Button variant="secondary" className="w-56 mx-14">change</Button>
+                  <Input
+                    placeholder="password"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
+                  />
+                </div>
+                <Button
+                  variant="secondary"
+                  className="w-56 mx-14"
+                  onClick={updateProfile}
+                >
+                  change
+                </Button>
               </SheetContent>
             </Sheet>
           </div>
-          <div>Username</div>
+          <div>
+            {user && (
+              <p>
+                {user.firstName} {user.lastName}
+              </p>
+            )}
+          </div>
         </div>
       </div>
       <div>

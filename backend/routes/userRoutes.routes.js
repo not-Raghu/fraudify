@@ -51,13 +51,11 @@ router.post("/signup", async (req, res) => {
     //sending
     if (userCreated) {
       const token = jwt.sign({ username: username }, process.env.JWT_SECRET);
-      await Account.create({userId: userCreated._id, balance: 1000}); // mock data
-
-
+      await Account.create({ userId: userCreated._id, balance: 1000 }); // mock data
 
       return res.status(200).json({
         message: "User created",
-        token: token, //get's set in localstorage later (rn its set in auth bearer)
+        token: token,
       });
     }
   } catch (error) {
@@ -72,10 +70,10 @@ router.post("/signin", async (req, res) => {
     username: username,
   });
 
-  if(!username || !password){
+  if (!username || !password) {
     return res.status(400).json({
-      message: "Enter all the dtails"
-    })
+      message: "Enter all the dtails",
+    });
   }
   // console.log(userdetails);working
   if (!userdetails) {
@@ -89,7 +87,6 @@ router.post("/signin", async (req, res) => {
       userdetails.password,
       password
     );
-
 
     if (isPasswordMatching) {
       const token = jwt.sign(
@@ -116,6 +113,23 @@ router.post("/signin", async (req, res) => {
   }
 });
 
+router.get("/me", authMiddlware, async (req, res) => {
+  try {
+    const user = await User.findOne({ username: res.username }).select(
+      "-password"
+    );
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      user,
+    });
+  } catch (error) {}
+});
+
 const updatingSchema = z.object({
   firstName: z.string().optional(),
   lastName: z.string().optional(),
@@ -126,6 +140,7 @@ router.put("/", authMiddlware, async (req, res) => {
   const { password, firstName, lastName } = req.body;
 
   const username = res.username;
+
   try {
     updatingSchema.parse({ firstName, lastName, password });
     const hasedPassword = await argon2.hash(password);
@@ -134,6 +149,11 @@ router.put("/", authMiddlware, async (req, res) => {
       { password: hasedPassword, firstName: firstName, lastName: lastName },
       { new: true }
     );
+    if (!updated) {
+      return res.status(400).json({
+        message: "can't update the fields , please enter valid fields",
+      });
+    }
     if (updated) {
       return res.status(200).json({
         message: "Updated successfully",
@@ -141,7 +161,9 @@ router.put("/", authMiddlware, async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("Error updating user" + error);
+    return res.status(400).json({
+      message: "password shoud minimum contain 6 characters",
+    });
   }
 });
 
@@ -149,37 +171,35 @@ router.get("/bulk", authMiddlware, async (req, res) => {
   //somehow extract query params
   const filter = req.query.filter.toLowerCase() || "";
 
-  if(filter.trim === ""){
+  if (filter.trim === "") {
     return res.json({
-      user: []
-    })
+      user: [],
+    });
   }
 
-  //find the user 
-  const currentUser = await User.findOne({username: res.username})
+  //find the user
+  const currentUser = await User.findOne({ username: res.username });
   const currentUserId = currentUser._id;
-
 
   //not retrieve current user shit
   const users = await User.find({
     //find all the users where {currentUserId} is not this AND {firstName or lastName == filter}
-   // https://stackoverflow.com/questions/52136551/mongoose-find-exclude-one-specific-document
+    // https://stackoverflow.com/questions/52136551/mongoose-find-exclude-one-specific-document
 
     $or: [
       { firstName: { $regex: filter, $options: "i" } },
       { lastName: { $regex: filter, $options: "i" } },
     ],
-    
-  }).sort({username: 1});
+  }).sort({ username: 1 });
 
-  const user = users.map(user => ({
+  const user = users.map((user) => ({
     username: user.username,
     firstName: user.firstName,
-    lastName: user.lastName
+    lastName: user.lastName,
   }));
 
   return res.json({
-    user: user
-  })
+    user: user,
+  });
 });
 export default router;
