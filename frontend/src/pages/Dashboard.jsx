@@ -1,5 +1,22 @@
-const Dashboard = () => {
-  return <div>Dashboard</div>;
-}
+import Navbar from "@/components/Navbar";
+import Balance from "@/components/Balance";
+import Users from "@/components/Users";
 
-export default Dashboard
+
+const Dashboard = () => {
+  return ( 
+    <div className="w-screen h-screen text-white">
+      <div>
+        <Navbar />
+      </div>
+      <div>
+       <Balance /> 
+      </div>
+      <div>
+        <Users />
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
