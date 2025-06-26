@@ -25,7 +25,7 @@ router.post("/signup", async (req, res) => {
         password: password,
       });
     } catch (error) {
-      return res.json({
+      return res.status(400).json({
         message: "Invalid schema",
       });
     }
@@ -51,7 +51,7 @@ router.post("/signup", async (req, res) => {
     //sending
     if (userCreated) {
       const token = jwt.sign({ username: username }, process.env.JWT_SECRET);
-      const createdMock = await Account.create({userId: userCreated._id, balance: 1000});
+      await Account.create({userId: userCreated._id, balance: 1000}); // mock data
 
 
 
@@ -71,6 +71,12 @@ router.post("/signin", async (req, res) => {
   const userdetails = await User.findOne({
     username: username,
   });
+
+  if(!username || !password){
+    return res.status(400).json({
+      message: "Enter all the dtails"
+    })
+  }
   // console.log(userdetails);working
   if (!userdetails) {
     return res.status(400).json({
@@ -83,6 +89,7 @@ router.post("/signin", async (req, res) => {
       userdetails.password,
       password
     );
+
 
     if (isPasswordMatching) {
       const token = jwt.sign(
@@ -102,6 +109,7 @@ router.post("/signin", async (req, res) => {
       });
     }
   } catch (error) {
+    // console.log("error here")
     return res.status(500).json({
       message: "Error in signin route",
     });

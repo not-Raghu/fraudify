@@ -3,7 +3,8 @@ import Signup from "./pages/Signup.jsx";
 import Signin from "./pages/Signin.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import SendMoney from "./pages/SendMoney.jsx";
-import { Button } from "./components/ui/button.jsx";
+import { ToastContainer } from "react-toastify";
+
 function App() {
   return (
     <div>
@@ -15,6 +16,7 @@ function App() {
           <Route path="/send" element={<SendMoney />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 }

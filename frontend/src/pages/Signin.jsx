@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,8 +15,37 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Signin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const history = useNavigate();
+
+  async function handleSubmit(e) {
+    //also add a useEffect to grab token and and make a backendcall for direct login
+    e.preventDefault();
+    try {
+      const signupResponse = await axios.post(
+        "http://localhost:3000/api/v1/user/signin",
+        {
+          username: email,
+          password,
+        }
+      );
+
+      toast.success(signupResponse.data.message);
+      localStorage.setItem("token", signupResponse.data.token);
+      history("/dashboard");
+    } catch (error) {
+      console.log(error)
+      const errorMsg = error?.response?.data?.message;
+      toast.error(errorMsg);
+    }
+  }
+
   return (
     <div className="flex justify-center items-center w-full h-screen">
       <Card className="w-full max-w-sm">
@@ -28,20 +57,36 @@ export default function Signin() {
           <form>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input type="email" placeholder="example@gmail.com" required />
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={email}
+                  placeholder="example@gmail.com"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  required
+                />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label>Password</Label>
                 </div>
-                <Input type="text" placeholder="password" required />
+                <Input
+                  type="text"
+                  value={password}
+                  placeholder="password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  required
+                />
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button type="submit" className="w-full">
+          <Button onClick={handleSubmit} className="w-full">
             Sign in
           </Button>
           <Label>Don't have an account?</Label>
@@ -54,7 +99,7 @@ export default function Signin() {
               </Link>
             </HoverCardTrigger>
             <HoverCardContent>
-              If you don't have an account, please sign up 😄
+              If you don't have an account, please sign up :D
             </HoverCardContent>
           </HoverCard>
         </CardFooter>

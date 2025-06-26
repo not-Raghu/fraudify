@@ -49,7 +49,8 @@ const Navbar = () => {
                   <Input placeholder="doe" />
                   <Label>Password</Label>
                   <Input placeholder="password" />
-                </div>
+                </div>  
+                <Button variant="secondary" className="w-56 mx-14">change</Button>
               </SheetContent>
             </Sheet>
           </div>
