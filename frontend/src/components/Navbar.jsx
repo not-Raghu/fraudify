@@ -68,10 +68,10 @@ const Navbar = ({ user }) => {
               <SheetContent className="bg-black text-white ">
                 <SheetHeader>
                   <SheetTitle className="text-white">
-                    Password change
+                    Update details
                   </SheetTitle>
                   <SheetDescription>
-                    Want to change password? Enter details below
+                      Please dont put your first and last name empty , didnt add that validation 😭
                   </SheetDescription>
                 </SheetHeader>
 

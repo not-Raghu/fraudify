@@ -8,8 +8,8 @@ const router = express();
 
 const signupSchema = z.object({
   username: z.string().email(), ///^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
   password: z.string().min(6),
 });
 
@@ -187,8 +187,8 @@ router.get("/bulk", authMiddlware, async (req, res) => {
     // https://stackoverflow.com/questions/52136551/mongoose-find-exclude-one-specific-document
 
     $or: [
-      { firstName: { $regex: filter, $options: "i" } },
-      { lastName: { $regex: filter, $options: "i" } },
+      { username: { $regex: filter, $options: "i" } },
+      // { lastName: { $regex: filter, $options: "i" } },
     ],
   }).sort({ username: 1 });
 
@@ -196,6 +196,7 @@ router.get("/bulk", authMiddlware, async (req, res) => {
     username: user.username,
     firstName: user.firstName,
     lastName: user.lastName,
+    _id: user._id
   }));
 
   return res.json({

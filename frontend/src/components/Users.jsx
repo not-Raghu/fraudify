@@ -1,44 +1,50 @@
 import { Label } from "@radix-ui/react-label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 const Users = () => {
+  const [search, setSearch] = useState("");
   return (
     <div className="py-5 px-3">
       <div className="font-sans mb-1">Type User you want to send to</div>
-      <Input className="w-xl mb-5" />
-
-      {/* input where user types and the filter on filter is applied */}
-      <User />
+      <Input
+        className="w-xl mb-5"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
+      />
+      <User search={search} />
     </div>
   );
 };
 
 export default Users;
 
-const User = () => {
-  const users = [
-    {
-      username: "adlsf@gmail.com",
-      firstName: "sdfjas",
-      lastName: "adlfj",
-    },
-    {
-      username: "adlsf@gmail.com",
-      firstName: "sdfjas",
-      lastName: "adlfj",
-    },
-    {
-      username: "adlsf@gmail.com",
-      firstName: "sdfjas",
-      lastName: "adlfj",
-    },
-    {
-      username: "adlsf@gmail.com",
-      firstName: "sdfjas",
-      lastName: "adlfj",
-    },
-  ];
+const User = ({ search }) => {
+  const [users, setUsers] = useState([]);
+  const history = useNavigate();
+
+  useEffect(() => {
+    console.log(users);
+    const token = localStorage.getItem("token"); 
+    axios
+      .get("http://localhost:3000/api/v1/user/bulk?filter=" + search, { //add debouncing here 
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => setUsers(res.data.user))
+      .catch((e) => toast(e));
+  }, [search]);
+
+  function handleOnclick(u) {
+    history("/send", { state: { user: u } });
+  }
+
   return (
     <div>
       <ul>
@@ -48,12 +54,15 @@ const User = () => {
             className="p-4 border border-amber-300 mb-2 rounded-2xl"
           >
             <div className="flex items-center justify-between">
-              <div className="grid grid-cols-4">
-                <span>
+              <div>
+                <div>
                   {u.firstName} {u.lastName}
-                </span>
+                </div>
+                <div className="text-gray-500">{u.username}</div>
               </div>
-              <Button variant="secondary">send money</Button>
+              <Button variant="secondary" onClick={() => handleOnclick(u)}>
+                send money
+              </Button>
             </div>
           </li>
         ))}
