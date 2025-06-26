@@ -1,8 +1,8 @@
 import express from "express";
-import { startSession } from "mongoose";
+import mongoose, { startSession } from "mongoose";
 import { authMiddlware } from "../middleware/authMiddleware.js";
 import { Account, User } from "../db.js";
-
+import { string, z } from "zod";
 const router = express.Router();
 
 router.get("/balance", authMiddlware, async (req, res) => {
@@ -23,10 +23,18 @@ router.get("/balance", authMiddlware, async (req, res) => {
     });
   } catch (error) {}
 });
+//add this in the future for amount validation
+
+// const transferValidation = z.object({
+//   to: z.instanceof(mongoose.Types.obj) ,
+//   amount: z.number().min(1),
+// });
 
 router.post("/transfer", authMiddlware, async (req, res) => {
   const session = await startSession();
   const { to, amount } = req.body;
+
+  // transferValidation.parse({ to, amount });
 
   try {
     session.startTransaction();
@@ -52,14 +60,11 @@ router.post("/transfer", authMiddlware, async (req, res) => {
       });
     }
 
-
-
-
     await Account.findByIdAndUpdate(currentUserAcconut._id, {
-        $inc:{balance: -amount} 
+      $inc: { balance: -amount },
     });
     await Account.findByIdAndUpdate(sendingTo._id, {
-        $inc:{balance: amount}
+      $inc: { balance: amount },
     });
 
     await session.commitTransaction();

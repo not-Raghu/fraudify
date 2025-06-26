@@ -28,7 +28,7 @@ const SendMoney = () => {
         </CardHeader>
         <CardFooter className="flex-col gap-2">
           <Label>Sending to (friends name) </Label>
-          <Input placeholder="Enter amount" />
+          <Input placeholder="Enter amount" type="number"/>
           <Button>Send Money</Button>
           <Label>want to cancel the payment?</Label>
           <HoverCard>
