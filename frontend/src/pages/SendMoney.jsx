@@ -58,7 +58,7 @@ const SendMoney = () => {
           </CardDescription>
         </CardHeader>
         <CardFooter className="flex-col gap-2">
-          <Label>Sending to {user.username}</Label>
+          <Label>Sending to {user.email}</Label>
           <Input
             placeholder="Enter amount"
             type="number"

@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -24,6 +24,7 @@ export default function Signin() {
   const [password, setPassword] = useState("");
   const history = useNavigate();
 
+
   async function handleSubmit(e) {
     //also add a useEffect to grab token and and make a backendcall for direct login
     e.preventDefault();
@@ -31,15 +32,16 @@ export default function Signin() {
       const signupResponse = await axios.post(
         "http://localhost:3000/api/v1/user/signin",
         {
-          username: email,
+          email: email,
           password,
         }
       );
-
+      console.log(signupResponse)
       toast.success(signupResponse.data.message);
       localStorage.setItem("token", signupResponse.data.token);
       history("/dashboard");
     } catch (error) {
+
       const errorMsg = error?.response?.data?.message;
       toast.error(errorMsg);
     }

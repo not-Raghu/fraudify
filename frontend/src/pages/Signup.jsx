@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import {
   HoverCard,
   HoverCardContent,
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/hover-card";
 import { useState } from "react";
 import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
 
 
@@ -29,25 +29,28 @@ export default function Signup() {
   const history = useNavigate()  
 
   async function handleSubmit() {
-    //also add a useEffect to grab token and and make a backendcall for direct login     
+    //also add a useEffect to grab token and and make a backendcall for direct login    
+    console.log(email) 
     try {
       const signupResponse = await axios.post(
         "http://localhost:3000/api/v1/user/signup",
         {
-          username: email,
-          firstName,
-          lastName,
-          password,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          password: password,
         }
       );
 
       toast.success(signupResponse.data.message);
       localStorage.setItem("token" , signupResponse.data.token);
+      history('/dashboard');
     } catch (error) {
+      console.log(error)
       const errorMsg = error?.response?.data?.message;
       toast.error(errorMsg);
     }
-    history('/dashboard');
+    
   }
 
   return (

@@ -17,7 +17,7 @@ export async function authMiddlware(req, res, next) {
       });
     }
     // console.log(decoded)
-    res.username = decoded.username;
+    res.email= decoded.email;
     next();
   } catch (error) {
     return res.status(403).json({

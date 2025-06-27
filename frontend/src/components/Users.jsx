@@ -57,7 +57,7 @@ const User = ({ search }) => {
                 <div>
                   {u.firstName} {u.lastName}
                 </div>
-                <div className="text-gray-500">{u.username}</div>
+                <div className="text-gray-500">{u.email}</div>
               </div>
               <Button variant="secondary" onClick={() => handleOnclick(u)}>
                 send money

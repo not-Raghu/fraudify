@@ -1,37 +1,30 @@
 import express from "express";
 import * as argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import { z } from "zod";
+import { late, z } from "zod";
 import { Account, User } from "../db.js";
 import { authMiddlware } from "../middleware/authMiddleware.js";
 const router = express();
 
 const signupSchema = z.object({
-  username: z.string().email().trim(), ///^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm
+  email: z.string().email().trim(), ///^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/gm
   firstName: z.string().trim().optional(),
   lastName: z.string().trim().optional(),
   password: z.string().min(6),
 });
 
 router.post("/signup", async (req, res) => {
-  const { username, firstName, lastName, password } = req.body;
-
+  const { email, firstName, lastName, password } = req.body;
   try {
-    try {
-      signupSchema.parse({
-        username: username, //type email
-        firstName: firstName,
-        lastName: lastName,
-        password: password,
-      });
-    } catch (error) {
-      return res.status(400).json({
-        message: "Invalid schema",
-      });
-    }
+    signupSchema.parse({
+      email: email, //type email
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+    });
 
     const isPresentAlr = await User.findOne({
-      username: username,
+      email: email,
     });
 
     if (isPresentAlr) {
@@ -41,16 +34,17 @@ router.post("/signup", async (req, res) => {
     }
 
     const hashedPassword = await argon2.hash(password);
+
     const userCreated = await User.create({
-      username: username,
-      firstName: firstName,
-      lastName: lastName,
+      email: email,
+      firstName: firstName || "",
+      lastName: lastName || "",
       password: hashedPassword,
     });
 
     //sending
     if (userCreated) {
-      const token = jwt.sign({ username: username }, process.env.JWT_SECRET);
+      const token = jwt.sign({ email: email}, process.env.JWT_SECRET);
       await Account.create({ userId: userCreated._id, balance: 1000 }); // mock data
 
       return res.status(200).json({
@@ -58,19 +52,24 @@ router.post("/signup", async (req, res) => {
         token: token,
       });
     }
-  } catch (error) {
-    console.log("Sign up error: " + error);
+  } catch (err) {
+    console.log(err);
+    if (err instanceof z.ZodError) {
+      return res.status(400).json({
+        message: "enter email and pass",
+      });
+    }
   }
 });
 
 router.post("/signin", async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   const userdetails = await User.findOne({
-    username: username,
+   email : email,
   });
 
-  if (!username || !password) {
+  if (!email|| !password) {
     return res.status(400).json({
       message: "Enter all the dtails",
     });
@@ -91,7 +90,7 @@ router.post("/signin", async (req, res) => {
     if (isPasswordMatching) {
       const token = jwt.sign(
         {
-          username,
+          email,
         },
         process.env.JWT_SECRET
       );
@@ -106,7 +105,12 @@ router.post("/signin", async (req, res) => {
       });
     }
   } catch (error) {
-    // console.log("error here")
+    if (error instanceof z.ZodError) {
+      return res
+        .status(400)
+        .json({ message: "Invalid input", errors: error.errors });
+    }
+
     return res.status(500).json({
       message: "Error in signin route",
     });
@@ -115,7 +119,7 @@ router.post("/signin", async (req, res) => {
 
 router.get("/me", authMiddlware, async (req, res) => {
   try {
-    const user = await User.findOne({ username: res.username }).select(
+    const user = await User.findOne({ email: res.email}).select(
       "-password"
     );
     if (!user) {
@@ -128,7 +132,7 @@ router.get("/me", authMiddlware, async (req, res) => {
       user,
     });
   } catch (error) {
-    console.log("error getting data, are you logged in?")
+    console.log("error getting data, are you logged in?");
   }
 });
 
@@ -141,13 +145,13 @@ const updatingSchema = z.object({
 router.put("/", authMiddlware, async (req, res) => {
   const { password, firstName, lastName } = req.body;
 
-  const username = res.username;
+  const email= res.email;
 
   try {
     updatingSchema.parse({ firstName, lastName, password });
     const hasedPassword = await argon2.hash(password);
     const updated = await User.findOneAndUpdate(
-      { username: username },
+      { email: email},
       { password: hasedPassword, firstName: firstName, lastName: lastName },
       { new: true }
     );
@@ -189,16 +193,16 @@ router.get("/bulk", authMiddlware, async (req, res) => {
     // https://stackoverflow.com/questions/52136551/mongoose-find-exclude-one-specific-document
 
     $or: [
-      { username: { $regex: filter, $options: "i" } },
+      {email: { $regex: filter, $options: "i" } },
       // { lastName: { $regex: filter, $options: "i" } },
     ],
   }).sort({ username: 1 });
 
   const user = users.map((user) => ({
-    username: user.username,
+    email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
-    _id: user._id
+    _id: user._id,
   }));
 
   return res.json({

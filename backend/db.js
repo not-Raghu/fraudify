@@ -12,7 +12,7 @@ export async function connectDB() {
 
 const UserSchema = new mongoose.Schema(
   {
-    username: {
+    email: {
       type: String,
       required: true,
       trim: true,
@@ -22,11 +22,11 @@ const UserSchema = new mongoose.Schema(
     },
     firstName: {
       type: String,
-      required: true,
+      required: false,
     },
     lastName: {
       type: String,
-      required: true,
+      required: false,
     },
     password: {
       type: String,

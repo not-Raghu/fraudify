@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/balance", authMiddlware, async (req, res) => {
   try {
-    const currentUserId = await User.findOne({ username: res.username }).select(
+    const currentUserId = await User.findOne({ email: res.email}).select(
       "_id"
     );
     if (!currentUserId) {
@@ -21,7 +21,9 @@ router.get("/balance", authMiddlware, async (req, res) => {
     return res.status(200).json({
       balance: currentUser.balance,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("error in balance route" , err)
+  }
 });
 //add this in the future for amount validation
 
@@ -38,7 +40,7 @@ router.post("/transfer", authMiddlware, async (req, res) => {
 
   try {
     session.startTransaction();
-    const currentUserId = await User.findOne({ username: res.username }).select(
+    const currentUserId = await User.findOne({ email: res.email}).select(
       "_id"
     );
 
