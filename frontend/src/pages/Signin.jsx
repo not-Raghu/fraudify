@@ -29,7 +29,7 @@ export default function Signin() {
     e.preventDefault();
     try {
       const signupResponse = await axios.post(
-        "http://localhost:3001/api/v1/user/signin",
+        "/api/v1/user/signin",
         {
           email: email,
           password,

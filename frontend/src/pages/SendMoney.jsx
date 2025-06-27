@@ -28,7 +28,7 @@ const SendMoney = () => {
     const token = localStorage.getItem("token");
     axios
       .post(
-        "http://localhost:3001/api/v1/account/transfer",
+        "/api/v1/account/transfer",
         {
           to: user._id,
           amount: money,

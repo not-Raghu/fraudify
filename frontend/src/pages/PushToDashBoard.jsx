@@ -5,7 +5,7 @@ const PushToDashBoard = () => {
     const history = useNavigate();
     useEffect(()=>{
         history('/dashboard')
-    },[])
+    });
   return (
     <div>
         Nothing here

@@ -65,15 +65,15 @@ router.post("/signup", async (req, res) => {
 router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
-  const userdetails = await User.findOne({
-    email: email,
-  });
-
-  if (!email || !password) {
+  if (!email.trim() || !password.trim()) {
     return res.status(400).json({
       message: "Enter all the dtails",
     });
   }
+  const userdetails = await User.findOne({
+    email: email,
+  });
+
   // console.log(userdetails);working
   if (!userdetails) {
     return res.status(400).json({
@@ -110,7 +110,7 @@ router.post("/signin", async (req, res) => {
         .status(400)
         .json({ message: "Invalid input", errors: error.errors });
     }
-
+    console.log(error);
     return res.status(500).json({
       message: "Error in signin route",
     });

@@ -16,7 +16,7 @@ const Dashboard = () => {
     }
 
     axios
-      .get("http://localhost:3001/api/v1/user/me", {
+      .get("/api/v1/user/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

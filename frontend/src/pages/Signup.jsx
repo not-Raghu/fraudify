@@ -33,7 +33,7 @@ export default function Signup() {
     console.log(email) 
     try {
       const signupResponse = await axios.post(
-        "http://localhost:3001/api/v1/user/signup",
+        "/api/v1/user/signup",
         {
           email: email,
           firstName: firstName,

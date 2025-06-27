@@ -40,7 +40,7 @@ const Navbar = ({ user }) => {
         }
       )
       .then(() => {
-        toast("udpated successfully , refresh to see the changes");
+        toast("udpated successfully");
       })
       .catch((err) => {
         console.log(err);
@@ -74,7 +74,7 @@ const Navbar = ({ user }) => {
                 <SheetHeader>
                   <SheetTitle className="text-white">Update details</SheetTitle>
                   <SheetDescription>
-                  enter password too again or else it won't work  🔫
+                  enter password too again or else it won't work  🔫 (you can change password too btw)
                   </SheetDescription>
                 </SheetHeader>
 
