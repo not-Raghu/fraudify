@@ -27,7 +27,7 @@ const Navbar = ({ user }) => {
     const token = localStorage.getItem("token"); //send authorization token when a route is protected
     axios
       .put(
-        "http://localhost:3000/api/v1/user",
+        "http://localhost:3001/api/v1/user",
         {
           firstName: firstName,
           lastName: lastName,

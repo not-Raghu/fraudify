@@ -4,7 +4,6 @@ import Users from "@/components/Users";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 
 const Dashboard = () => {
   const [userData, setUserData] = useState({});
@@ -17,7 +16,7 @@ const Dashboard = () => {
     }
 
     axios
-      .get("http://localhost:3000/api/v1/user/me", {
+      .get("http://localhost:3001/api/v1/user/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -26,11 +25,10 @@ const Dashboard = () => {
         // console.log(res);
         setUserData(res);
       })
-      .catch((err) => {
-        toast.error(err.response.data.message);
+      .catch(() => {
         history("/signin");
       });
-  }, []);
+  }, );
 
   return (
     <div className="w-screen h-screen text-white">

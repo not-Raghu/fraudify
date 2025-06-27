@@ -9,13 +9,13 @@ const app = express();
 config();
 connectDB();
 app.use(cors({
-    origin: ["http://localhost:5173"]
+    origin: ["http://localhost:3000","http://localhost:5173"]
 }))
 
 app.use(express.json())
 
 app.use("/api/v1", routes);
 
-app.listen(3000 , ()=>{
-    console.log("listening on 3000")
+app.listen(3001 , ()=>{
+    console.log("listening on 3001")
 })

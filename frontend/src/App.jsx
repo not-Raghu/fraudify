@@ -5,17 +5,19 @@ import Dashboard from "./pages/Dashboard.jsx";
 import SendMoney from "./pages/SendMoney.jsx";
 import PushToDashBoard from "./pages/PushToDashBoard.jsx";
 import { ToastContainer } from "react-toastify";
+import NotFound from "./pages/NotFound.jsx";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
         <Routes>
-          {/* <Route path="/" element={<PushToDashBoard />}/> */}
+          <Route path="/" element={<PushToDashBoard />}/>
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/send" element={<SendMoney />} />
+          <Route path="/*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer />
