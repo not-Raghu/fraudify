@@ -44,7 +44,7 @@ router.post("/signup", async (req, res) => {
 
     //sending
     if (userCreated) {
-      const token = jwt.sign({ email: email}, process.env.JWT_SECRET);
+      const token = jwt.sign({ email: email }, process.env.JWT_SECRET);
       await Account.create({ userId: userCreated._id, balance: 1000 }); // mock data
 
       return res.status(200).json({
@@ -66,10 +66,10 @@ router.post("/signin", async (req, res) => {
   const { email, password } = req.body;
 
   const userdetails = await User.findOne({
-   email : email,
+    email: email,
   });
 
-  if (!email|| !password) {
+  if (!email || !password) {
     return res.status(400).json({
       message: "Enter all the dtails",
     });
@@ -119,9 +119,7 @@ router.post("/signin", async (req, res) => {
 
 router.get("/me", authMiddlware, async (req, res) => {
   try {
-    const user = await User.findOne({ email: res.email}).select(
-      "-password"
-    );
+    const user = await User.findOne({ email: res.email }).select("-password");
     if (!user) {
       return res.status(400).json({
         message: "User not found",
@@ -145,13 +143,13 @@ const updatingSchema = z.object({
 router.put("/", authMiddlware, async (req, res) => {
   const { password, firstName, lastName } = req.body;
 
-  const email= res.email;
+  const email = res.email;
 
   try {
     updatingSchema.parse({ firstName, lastName, password });
     const hasedPassword = await argon2.hash(password);
     const updated = await User.findOneAndUpdate(
-      { email: email},
+      { email: email },
       { password: hasedPassword, firstName: firstName, lastName: lastName },
       { new: true }
     );
@@ -177,14 +175,14 @@ router.get("/bulk", authMiddlware, async (req, res) => {
   //somehow extract query params
   const filter = req.query.filter.toLowerCase() || "";
 
-  if (filter.trim === "") {
-    return res.json({
-      user: [],
-    });
-  }
+  // if (filter.trim()) {
+  //   return res.json({
+  //     user: [],
+  //   });
+  // }
 
   //find the user
-  const currentUser = await User.findOne({ username: res.username });
+  const currentUser = await User.findOne({ email: res.email });
   const currentUserId = currentUser._id;
 
   //not retrieve current user shit
@@ -192,10 +190,13 @@ router.get("/bulk", authMiddlware, async (req, res) => {
     //find all the users where {currentUserId} is not this AND {firstName or lastName == filter}
     // https://stackoverflow.com/questions/52136551/mongoose-find-exclude-one-specific-document
 
-    $or: [
-      {email: { $regex: filter, $options: "i" } },
-      // { lastName: { $regex: filter, $options: "i" } },
-    ],
+    _id: { $ne: currentUserId },
+    $or: [{ email: { $regex: filter, $options: "i" } }],
+
+    // $or: [
+    //   {email: { $regex: filter, $options: "i" } },
+    // { lastName: { $regex: filter, $options: "i" } },
+    // ],
   }).sort({ username: 1 });
 
   const user = users.map((user) => ({

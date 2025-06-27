@@ -10,10 +10,9 @@ const Dashboard = () => {
   const [userData, setUserData] = useState({});
   const history = useNavigate();
 
-
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if(!token){
+    if (!token) {
       history("/signin");
     }
 
@@ -26,10 +25,11 @@ const Dashboard = () => {
       .then((res) => {
         // console.log(res);
         setUserData(res);
-      }).catch(err => {
-        toast.error(err.response.data.message)
-        history('/signin')
       })
+      .catch((err) => {
+        toast.error(err.response.data.message);
+        history("/signin");
+      });
   }, []);
 
   return (

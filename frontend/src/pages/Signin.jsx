@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {  useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -23,7 +23,6 @@ export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const history = useNavigate();
-
 
   async function handleSubmit(e) {
     //also add a useEffect to grab token and and make a backendcall for direct login
@@ -36,12 +35,11 @@ export default function Signin() {
           password,
         }
       );
-      console.log(signupResponse)
+
       toast.success(signupResponse.data.message);
       localStorage.setItem("token", signupResponse.data.token);
       history("/dashboard");
     } catch (error) {
-
       const errorMsg = error?.response?.data?.message;
       toast.error(errorMsg);
     }

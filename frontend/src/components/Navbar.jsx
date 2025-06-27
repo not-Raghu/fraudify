@@ -52,9 +52,9 @@ const Navbar = ({ user }) => {
     <div>
       <div className="rounded p-11 flex justify-between">
         <div className="font-bold text-5xl font-sans">
-          <div>PayTM </div>
+          <div>Fraudify</div>
           <div className="font-light text-xl font-sans">
-            Your scamming payment app :D
+            Toally a legit bank, Trust Bro :D
           </div>
         </div>
 
@@ -74,8 +74,7 @@ const Navbar = ({ user }) => {
                 <SheetHeader>
                   <SheetTitle className="text-white">Update details</SheetTitle>
                   <SheetDescription>
-                    Please dont put your first and last name empty , didnt add
-                    that validation 😭
+                  enter password too again or else it won't work  🔫
                   </SheetDescription>
                 </SheetHeader>
 
@@ -128,7 +127,7 @@ const Navbar = ({ user }) => {
                 onClick={() => {
                   localStorage.removeItem("token");
                   history("/signin");
-                  toast.success("logged out successfully!")
+                  toast.success("logged out successfully!");
                 }}
               />
             </div>
