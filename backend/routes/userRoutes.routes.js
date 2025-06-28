@@ -1,7 +1,7 @@
 import express from "express";
 import * as argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import { late, z } from "zod";
+import { z } from "zod";
 import { Account, User } from "../db.js";
 import { authMiddlware } from "../middleware/authMiddleware.js";
 const router = express();
