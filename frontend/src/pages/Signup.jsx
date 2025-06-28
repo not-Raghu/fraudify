@@ -26,7 +26,9 @@ export default function Signup() {
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const history = useNavigate();
-  const API_BASE = "http://localhost:3001";
+
+
+  const API_BASE = import.meta.env.VITE_API_BASE
   async function handleSubmit() {
     //also add a useEffect to grab token and and make a backendcall for direct login
     console.log(email);
