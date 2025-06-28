@@ -5,17 +5,18 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import { connectDB } from './db.js';
 const app = express();
+const port = process.env.PORT || 4000 
 
 config();
 connectDB();
 app.use(cors({
-    origin: ["http://localhost:3000","http://localhost:5173", "https://fraudify-tau.vercel.app"]
+    origin: [ "https://fraudify-tau.vercel.app"] //"http://localhost:3000","http://localhost:5173",
 }))
 
 app.use(express.json())
 
 app.use("/api/v1", routes);
 
-app.listen(3001 , ()=>{
-    console.log("backend running on port 3001")
+app.listen(port , ()=>{
+    console.log(`backend running on port ${port}`)
 })

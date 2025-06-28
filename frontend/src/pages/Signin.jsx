@@ -28,6 +28,7 @@ export default function Signin() {
 
   async function handleSubmit(e) {
     //also add a useEffect to grab token and and make a backendcall for direct login
+    console.log(API_BASE)
     e.preventDefault();
     try {
       const signupResponse = await axios.post(
