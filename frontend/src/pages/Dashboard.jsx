@@ -9,15 +9,17 @@ const Dashboard = () => {
   const [userData, setUserData] = useState({});
   const history = useNavigate();
 
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       history("/signin");
     }
 
-
     axios
-      .get("/api/v1/user/me", {
+      .get(API_BASE + "/api/v1/user/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -29,7 +31,7 @@ const Dashboard = () => {
       .catch(() => {
         history("/signin");
       });
-  },);
+  }, []);
 
   return (
     <div className="w-screen h-screen text-white">

@@ -24,11 +24,14 @@ const SendMoney = () => {
   const user = location.state.user;
   const [money, setMoney] = useState(0);
   const history = useNavigate();
+
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
   function handleSubmit() {
     const token = localStorage.getItem("token");
     axios
       .post(
-        "/api/v1/account/transfer",
+        API_BASE + "/api/v1/account/transfer",
         {
           to: user._id,
           amount: money,
@@ -41,11 +44,11 @@ const SendMoney = () => {
       )
       .then((res) => {
         toast.success(res.data.message);
-        history('/dashboard')
+        history("/dashboard");
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.response.data.message);
+        history("/dashboard");
       });
   }
   return (
@@ -79,7 +82,7 @@ const SendMoney = () => {
             </HoverCardTrigger>
             <HoverCardContent>click link to go to dashboard</HoverCardContent>
           </HoverCard>
-        </CardFooter>{" "}
+        </CardFooter>
       </Card>
     </div>
   );

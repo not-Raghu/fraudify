@@ -18,22 +18,21 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
-  const history = useNavigate()  
-
+  const history = useNavigate();
+  const API_BASE = "http://localhost:3001";
   async function handleSubmit() {
-    //also add a useEffect to grab token and and make a backendcall for direct login    
-    console.log(email) 
+    //also add a useEffect to grab token and and make a backendcall for direct login
+    console.log(email);
     try {
       const signupResponse = await axios.post(
-        "/api/v1/user/signup",
+        API_BASE + "/api/v1/user/signup",
         {
           email: email,
           firstName: firstName,
@@ -43,14 +42,13 @@ export default function Signup() {
       );
 
       toast.success(signupResponse.data.message);
-      localStorage.setItem("token" , signupResponse.data.token);
-      history('/dashboard');
+      localStorage.setItem("token", signupResponse.data.token);
+      history("/dashboard");
     } catch (error) {
-      console.log(error)
+      console.log(error);
       const errorMsg = error?.response?.data?.message;
       toast.error(errorMsg);
     }
-    
   }
 
   return (

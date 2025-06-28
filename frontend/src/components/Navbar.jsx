@@ -22,12 +22,14 @@ const Navbar = ({ user }) => {
 
   const history = useNavigate();
 
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
   const updateProfile = async () => {
     console.log(firstName, lastName, password);
     const token = localStorage.getItem("token"); //send authorization token when a route is protected
     axios
       .put(
-        "/api/v1/user",
+        API_BASE + "/api/v1/user",
         {
           firstName: firstName,
           lastName: lastName,
@@ -41,9 +43,9 @@ const Navbar = ({ user }) => {
       )
       .then(() => {
         toast("udpated successfully");
+        history(0);
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.response.data.message);
       });
   };
@@ -117,7 +119,7 @@ const Navbar = ({ user }) => {
           <div>
             {user && (
               <p>
-                {user.firstName} {" "} {user.lastName}
+                {user.firstName} {user.lastName}
               </p>
             )}
           </div>

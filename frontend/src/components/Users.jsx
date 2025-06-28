@@ -2,8 +2,9 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const Users = () => {
   const [search, setSearch] = useState("");
   return (
@@ -27,17 +28,25 @@ const User = ({ search }) => {
   const [users, setUsers] = useState([]);
   const history = useNavigate();
 
+  const API_BASE = import.meta.env.VITE_API_BASE;
+
+
   useEffect(() => {
     // console.log(users);
-    const token = localStorage.getItem("token"); 
-    axios
-      .get("/api/v1/user/bulk?filter=" + search, { //add debouncing here ;
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => setUsers(res.data.user))
-      .catch((e) => toast(e));
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const timer = setTimeout(() => {
+      axios
+        .get(API_BASE + "/api/v1/user/bulk?filter=" + search, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => setUsers(res.data.user))
+        .catch((e) => toast(e));
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [search]);
 
   function handleOnclick(u) {
@@ -47,7 +56,7 @@ const User = ({ search }) => {
   return (
     <div>
       <ul>
-        {users.map((u, index) => (
+        {users?.map((u, index) => (
           <li
             key={index}
             className="p-4 border border-gray-500 mb-2 rounded-2xl"

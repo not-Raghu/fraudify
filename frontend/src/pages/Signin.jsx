@@ -24,14 +24,14 @@ export default function Signin() {
   const [password, setPassword] = useState("");
   const history = useNavigate();
 
-
+  const API_BASE = "http://localhost:3001";
 
   async function handleSubmit(e) {
     //also add a useEffect to grab token and and make a backendcall for direct login
     e.preventDefault();
     try {
       const signupResponse = await axios.post(
-        "/api/v1/user/signin",
+        API_BASE + "/api/v1/user/signin",
         {
           email: email,
           password,
