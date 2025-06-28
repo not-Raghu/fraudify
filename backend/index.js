@@ -9,7 +9,7 @@ const app = express();
 config();
 connectDB();
 app.use(cors({
-    origin: ["http://localhost:3000","http://localhost:5173", "https://fraudify.onrender.com"]
+    origin: ["http://localhost:3000","http://localhost:5173", "https://fraudify-mkq9kbxbz-not-raghus-projects.vercel.app/signin"]
 }))
 
 app.use(express.json())
