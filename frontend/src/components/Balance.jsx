@@ -6,7 +6,7 @@ const Balance = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("api/v1/account/balance", { 
+      .get("/api/v1/account/balance", { 
         headers: {
           Authorization: `Bearer ${token}`,
         },

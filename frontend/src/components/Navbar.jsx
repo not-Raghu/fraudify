@@ -27,7 +27,7 @@ const Navbar = ({ user }) => {
     const token = localStorage.getItem("token"); //send authorization token when a route is protected
     axios
       .put(
-        "http://localhost:3001/api/v1/user",
+        "/api/v1/user",
         {
           firstName: firstName,
           lastName: lastName,
@@ -74,7 +74,7 @@ const Navbar = ({ user }) => {
                 <SheetHeader>
                   <SheetTitle className="text-white">Update details</SheetTitle>
                   <SheetDescription>
-                  enter password too again or else it won't work  🔫 (you can change password too btw)
+                    update the fields you want
                   </SheetDescription>
                 </SheetHeader>
 
@@ -106,7 +106,7 @@ const Navbar = ({ user }) => {
                 </div>
                 <Button
                   variant="secondary"
-                  className="w-56 mx-14"
+                  className="w-56 mx-16"
                   onClick={updateProfile}
                 >
                   change
@@ -117,7 +117,7 @@ const Navbar = ({ user }) => {
           <div>
             {user && (
               <p>
-                {user.firstName} {user.lastName}
+                {user.firstName} {" "} {user.lastName}
               </p>
             )}
           </div>
@@ -135,7 +135,7 @@ const Navbar = ({ user }) => {
         </div>
       </div>
       <div>
-        <hr className="w-screen h-px my-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+        <hr className="w-screen min-h-0.5 my-4 bg-gray-200 border-0 dark:bg-gray-700"></hr>
       </div>
     </div>
   );

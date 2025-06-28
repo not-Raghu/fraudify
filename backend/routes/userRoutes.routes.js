@@ -134,39 +134,49 @@ router.get("/me", authMiddlware, async (req, res) => {
   }
 });
 
-const updatingSchema = z.object({
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  password: z.string().min(6).optional(),
-});
-
 router.put("/", authMiddlware, async (req, res) => {
   const { password, firstName, lastName } = req.body;
 
   const email = res.email;
 
   try {
-    updatingSchema.parse({ firstName, lastName, password });
-    const hasedPassword = await argon2.hash(password);
-    const updated = await User.findOneAndUpdate(
+    const currentUser = await User.findOne({ email });
+
+    if (!firstName && !lastName && !password) {
+      return res.status(400).json({
+        message: "nothign to update?",
+      });
+    }
+    if (password && password.length < 6) {
+      return res.status(400).json({
+        message: "password length should be more than 6 characters",
+      });
+    }
+
+    if (currentUser) {
+        currentUser.firstName = firstName || currentUser.firstName,
+        currentUser.lastName = lastName || currentUser.lastName,
+        currentUser.password = password || currentUser.password
+    }
+
+    if (password) {
+      const hashed = await argon2.hash(currentUser.password);
+      currentUser.password = hashed;
+    }
+
+    const response = await User.findOneAndUpdate(
       { email: email },
-      { password: hasedPassword, firstName: firstName, lastName: lastName },
+      currentUser,
       { new: true }
     );
-    if (!updated) {
-      return res.status(400).json({
-        message: "can't update the fields , please enter valid fields",
-      });
-    }
-    if (updated) {
-      return res.status(200).json({
-        message: "Updated successfully",
-        updated,
-      });
-    }
+    // console.log(response)
+    return res.status(200).json({
+      message: "updated successfully",
+      response,
+    });
   } catch (error) {
-    return res.status(400).json({
-      message: "password shoud minimum contain 6 characters",
+    return res.status(500).json({
+      message: "server error",
     });
   }
 });

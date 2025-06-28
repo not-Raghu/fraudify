@@ -31,7 +31,7 @@ const User = ({ search }) => {
     // console.log(users);
     const token = localStorage.getItem("token"); 
     axios
-      .get("http://localhost:3001/api/v1/user/bulk?filter=" + search, { //add debouncing here ;
+      .get("/api/v1/user/bulk?filter=" + search, { //add debouncing here ;
         headers: {
           Authorization: `Bearer ${token}`,
         },

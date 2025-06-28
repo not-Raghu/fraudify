@@ -15,6 +15,7 @@ const Dashboard = () => {
       history("/signin");
     }
 
+
     axios
       .get("/api/v1/user/me", {
         headers: {
@@ -28,7 +29,7 @@ const Dashboard = () => {
       .catch(() => {
         history("/signin");
       });
-  }, );
+  },);
 
   return (
     <div className="w-screen h-screen text-white">
